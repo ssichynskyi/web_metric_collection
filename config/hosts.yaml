@@ -1,0 +1,14 @@
+---
+Monitored web sites:
+  - monedo:
+      url: 'https://www.monedo.com/'
+      expected text: 'Monedo is where the best finance and tech brains come together'
+
+Metrics endpoint:
+  Aiven:
+    Kafka:
+      host: 'kafka-3b71190f-project-7747.aivencloud.com'
+      port: 26867
+    Postgres:
+      host: 'pg-12e12ac-project-7747.aivencloud.com'
+      port: 26865
