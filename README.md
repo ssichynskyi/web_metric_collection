@@ -1,1 +1,2 @@
-# web_metric_collection
+# Task description
+Implements a service that monitors website availability over the network, produces metrics about this and passes these events through an Aiven Kafka instance into an Aiven PostgreSQL database. The website checker should perform the checks periodically and collect the HTTP response time, status code returned, as well as optionally checking the returned page contents for a regexp pattern that is expected to be found on the page.
