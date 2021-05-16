@@ -1,0 +1,15 @@
+---
+Monitored web sites:
+  monedo:
+    url: ''
+    request sleep: 600
+    expected text: ''
+
+Metrics endpoint:
+  Aiven:
+    Project:
+      name:
+    Kafka:
+      host: ''
+      port:
+      topic:
