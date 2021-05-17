@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pyyaml = "*"
 requests = "*"
+kafka-python = "*"
 
 [dev-packages]
 pytest = "*"
