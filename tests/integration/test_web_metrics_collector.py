@@ -16,7 +16,15 @@ RE_PATTERN_INVALID = 'I find your lack of faith disturbing'
 @pytest.mark.slow
 def test_behavior_with_invalid_http_response():
     result = get_metrics('https://www.monedo.jpy/')
-    assert result == (None, None, None, None, 404, False, SERVICE_NAME)
+    assert result == {
+        'request_timestamp': None,
+        'url': None,
+        'ip_address': None,
+        'resp_time': None,
+        'resp_status_code': 404,
+        'pattern_found': None,
+        'service_name': SERVICE_NAME
+    }
 
 
 @pytest.mark.integration
@@ -26,26 +34,26 @@ def test_behavior_with_valid_http_response_and_no_pattern():
     result = get_metrics(ALWAYS_AVAILABLE_URL)
     max_timespan = timedelta(milliseconds=MAXIMUM_ACCEPTABLE_RESP_TIME)
     msg = f'Response to {ALWAYS_AVAILABLE_URL} either unsuccessful or took more than {str(max_timespan)}'
-    assert max_timespan > datetime.utcnow() - result[0] > timedelta(milliseconds=0), msg
-    assert result[1] == ALWAYS_AVAILABLE_URL
-    msg = f'IP address seems have invalid format. Got: {result[2]}'
-    assert ipaddress.ip_address(result[2]), msg
+    assert max_timespan > datetime.utcnow() - result['request_timestamp'] > timedelta(milliseconds=0), msg
+    assert result['url'] == ALWAYS_AVAILABLE_URL
+    msg = f'IP address seems have invalid format. Got: {result["url"]}'
+    assert ipaddress.ip_address(result['ip_address']), msg
     msg = f'Elapsed argument for {ALWAYS_AVAILABLE_URL} took longer than {str(max_timespan)}'
-    assert result[3] < max_timespan, msg
-    assert result[4] == 200
-    assert result[5] is None
-    assert result[6] is SERVICE_NAME
+    assert result['resp_time'] < max_timespan, msg
+    assert result['resp_status_code'] == 200
+    assert result['pattern_found'] is None
+    assert result['service_name'] is SERVICE_NAME
 
 
 @pytest.mark.integration
 @pytest.mark.slow
 def test_behavior_with_valid_http_response_and_valid_pattern():
     result = get_metrics(ALWAYS_AVAILABLE_URL, RE_PATTERN_VALID)
-    assert result[5] is True
+    assert result['pattern_found'] is True
 
 
 @pytest.mark.integration
 @pytest.mark.slow
 def test_behavior_with_valid_http_response_and_invalid_pattern():
     result = get_metrics(ALWAYS_AVAILABLE_URL, RE_PATTERN_INVALID)
-    assert result[5] is False
+    assert result['pattern_found'] is False
