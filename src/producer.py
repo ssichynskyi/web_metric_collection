@@ -67,16 +67,3 @@ class Producer:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._producer.close()
-
-
-# _kafka_url = config['Metrics endpoint']['Aiven']['Kafka']['host']
-# _kafka_port = str(config['Metrics endpoint']['Aiven']['Kafka']['port'])
-# kafka_uri = ':'.join((_kafka_url, _kafka_port))
-# ca_path = os.environ['CA-CERT']
-# cert_path = os.environ['SERVICE_CERT']
-# key_path = os.environ['SERVICE-KEY']
-#
-# aiven_kafka_producer = Producer(kafka_uri, ca_path, cert_path, key_path)
-# with aiven_kafka_producer:
-#     aiven_kafka_producer.send('website-metrics', value={'message': '5'})
-# print('')
