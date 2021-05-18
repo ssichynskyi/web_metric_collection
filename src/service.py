@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 
@@ -27,11 +28,13 @@ def main(
         None, runs until interrupted by user
 
     """
-    while True:
-        result = get_metrics(url, pattern)
-        with producer:
+    log = logging.getLogger('WebMetricProducerService')
+    log.info('Starting Website metric collection and publishing service.')
+    with producer:
+        while True:
+            result = get_metrics(url, pattern)
             producer.send(topic, value=result)
-        time.sleep(sleep_time)
+            time.sleep(sleep_time)
 
 
 if __name__ == '__main__':
@@ -45,5 +48,9 @@ if __name__ == '__main__':
     cert_path = os.environ['SERVICE_CERT']
     key_path = os.environ['SERVICE-KEY']
     aiven_kafka_producer = Producer(kafka_uri, ca_path, cert_path, key_path)
+    logging.basicConfig(
+        format='%(asctime)s - %(levelname)s | %(name)s >>> %(message)s',
+        datefmt='%d-%b-%Y %H:%M:%S'
+    )
     # ToDo: pass topic as a sys arg
     main(target_url, aiven_kafka_producer, 'website-metrics', sleep_after_request, target_pattern)
