@@ -14,7 +14,6 @@ RE_PATTERN_INVALID = 'I find your lack of faith disturbing'
 
 
 @pytest.mark.integration
-@pytest.mark.slow
 def test_behavior_with_invalid_http_response():
     result = get_metrics(INCORRECT_URL)
     try:
@@ -33,7 +32,6 @@ def test_behavior_with_invalid_http_response():
 
 
 @pytest.mark.integration
-@pytest.mark.slow
 def test_behavior_with_valid_http_response_and_no_pattern():
     # Due to datetime.utcnow() this test may fail during manual debug!
     result = get_metrics(ALWAYS_AVAILABLE_URL)
@@ -60,14 +58,12 @@ def test_behavior_with_valid_http_response_and_no_pattern():
 
 
 @pytest.mark.integration
-@pytest.mark.slow
 def test_behavior_with_valid_http_response_and_valid_pattern():
     result = get_metrics(ALWAYS_AVAILABLE_URL, RE_PATTERN_VALID)
     assert result['pattern_found'] is True
 
 
 @pytest.mark.integration
-@pytest.mark.slow
 def test_behavior_with_valid_http_response_and_invalid_pattern():
     result = get_metrics(ALWAYS_AVAILABLE_URL, RE_PATTERN_INVALID)
     assert result['pattern_found'] is False

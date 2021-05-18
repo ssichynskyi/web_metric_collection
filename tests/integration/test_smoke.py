@@ -8,7 +8,6 @@ and the overall setup (including Aiven kafka broker) is working"""
 
 
 @pytest.mark.smoke
-@pytest.mark.slow
 def test_smoke_kafka_producer():
     with producer:
         producer._producer.config['max_block_ms'] = 3000
