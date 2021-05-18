@@ -8,6 +8,20 @@ from src.producer import Producer
 from utils.env_config import config
 
 
+TOPIC = 'website-metrics'
+
+_sleep_after_request = config['Monitored web sites']['monedo']['request sleep']
+_target_url = config['Monitored web sites']['monedo']['url']
+_target_pattern = config['Monitored web sites']['monedo']['expected pattern']
+_kafka_url = config['Metrics endpoint']['Aiven']['Kafka']['host']
+_kafka_port = str(config['Metrics endpoint']['Aiven']['Kafka']['port'])
+_kafka_uri = ':'.join((_kafka_url, _kafka_port))
+_ca_path = os.environ['CA-CERT']
+_cert_path = os.environ['SERVICE_CERT']
+_key_path = os.environ['SERVICE-KEY']
+aiven_kafka_producer = Producer(_kafka_uri, _ca_path, _cert_path, _key_path)
+
+
 def main(
         url: str,
         producer: Producer,
@@ -38,19 +52,9 @@ def main(
 
 
 if __name__ == '__main__':
-    sleep_after_request = config['Monitored web sites']['monedo']['request sleep']
-    target_url = config['Monitored web sites']['monedo']['url']
-    target_pattern = config['Monitored web sites']['monedo']['expected pattern']
-    _kafka_url = config['Metrics endpoint']['Aiven']['Kafka']['host']
-    _kafka_port = str(config['Metrics endpoint']['Aiven']['Kafka']['port'])
-    kafka_uri = ':'.join((_kafka_url, _kafka_port))
-    ca_path = os.environ['CA-CERT']
-    cert_path = os.environ['SERVICE_CERT']
-    key_path = os.environ['SERVICE-KEY']
-    aiven_kafka_producer = Producer(kafka_uri, ca_path, cert_path, key_path)
     logging.basicConfig(
         format='%(asctime)s - %(levelname)s | %(name)s >>> %(message)s',
         datefmt='%d-%b-%Y %H:%M:%S'
     )
     # ToDo: pass topic as a sys arg
-    main(target_url, aiven_kafka_producer, 'website-metrics', sleep_after_request, target_pattern)
+    main(_target_url, aiven_kafka_producer, TOPIC, _sleep_after_request, _target_pattern)
