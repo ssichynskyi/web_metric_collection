@@ -12,3 +12,12 @@ not collect metrics too often or from too many websites.
 - any optimization related to Kafka broker messaging. Same assumption as above.
 - implementation of the service as a background service / daemon. For the testing task
 it hardly has any practical reason while complicates testing because of IPC layer.
+
+## ToDo:
+- add unit tests for service
+- add integration tests for service
+- extract / create documentation
+- create CI for unit test execution
+- create CI for integration test execution
+- add E2E tests with and without regexp pattern
+- add E2E tests with invalid website
