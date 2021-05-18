@@ -2,7 +2,9 @@
 Monitored web sites:
   monedo:
     url: ''
-    request sleep: 600
+    # number of seconds between polling website. It's highly recommended that
+    # this time is at least 10x smaller than fetch time for paired service - db publisher
+    request sleep: 6
     expected text: ''
 
 Metrics endpoint:
