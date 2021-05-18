@@ -27,7 +27,7 @@ def get_metrics(url: str, re_pattern: Optional[str] = None) -> Dict:
         resp = requests.get(url, headers=headers, stream=True)
     except requests.exceptions.ConnectionError:
         result = {
-            'request_timestamp': None,
+            'request_timestamp': request_time.strftime('%Y-%m-%d %H:%M:%S'),
             'url': None,
             'ip_address': None,
             'resp_time': None,
@@ -35,6 +35,7 @@ def get_metrics(url: str, re_pattern: Optional[str] = None) -> Dict:
             'pattern_found': False if re_pattern else None,
             'service_name': SERVICE_NAME
         }
+        log.warning(f'Not possible to reach url {url}!')
         return result
     rest = parse_response(resp, re_pattern)
     log.info(f'Received response from: {url}. Within: {rest[1]} with status: {rest[2]}')
