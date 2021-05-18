@@ -1,9 +1,6 @@
 import json
 import logging
-import os
-from typing import Optional
 from kafka import KafkaProducer
-from utils.env_config import config
 
 
 log = logging.getLogger(__name__)
@@ -23,6 +20,13 @@ class Producer:
             cert_path: service cert path
             key_path: service cert key path
 
+        Usage:
+            Connection is activated not on object instantiation but
+            when entering with statement. e.g.:
+            producer = Producer(...)
+            with producer:
+                producer.send(...)
+
         """
         self._service_uri = service_uri
         self._ca_path = ca_path
@@ -38,6 +42,7 @@ class Producer:
             ssl_keyfile=self._key_path,
             value_serializer=lambda x: json.dumps(x).encode('utf-8')
         )
+        log.info(f'Connected to kafka broker at: {self._service_uri}')
 
     @property
     def producer(self):
@@ -60,6 +65,7 @@ class Producer:
         Raises:
             KafkaTimeoutError: if unable to fetch topic metadata, or unable
                 to obtain memory buffer prior to configured max_block_ms
+
         """
         log.info(f'Sending message {value} to topic {topic}')
         self._producer.send(topic, value, *args, **kwargs)
