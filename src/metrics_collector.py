@@ -28,7 +28,7 @@ def get_metrics(url: str, re_pattern: Optional[str] = None) -> Dict:
     except requests.exceptions.ConnectionError:
         result = {
             'request_timestamp': request_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'url': None,
+            'url': url,
             'ip_address': None,
             'resp_time': None,
             'resp_status_code': 404,

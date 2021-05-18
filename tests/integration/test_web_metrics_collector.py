@@ -6,6 +6,7 @@ from datetime import timedelta, datetime
 
 
 ALWAYS_AVAILABLE_URL = 'https://www.google.com'
+INCORRECT_URL = 'https://www.monedo.jpy/'
 MAXIMUM_ACCEPTABLE_RESP_TIME = 2000
 STATUS_CODE_200 = 200
 RE_PATTERN_VALID = 'Google '
@@ -15,14 +16,14 @@ RE_PATTERN_INVALID = 'I find your lack of faith disturbing'
 @pytest.mark.integration
 @pytest.mark.slow
 def test_behavior_with_invalid_http_response():
-    result = get_metrics('https://www.monedo.jpy/')
+    result = get_metrics(INCORRECT_URL)
     try:
         datetime.strptime(result['request_timestamp'], '%Y-%m-%d %H:%M:%S')
     except ValueError as e:
         pytest.fail(f"{result['request_timestamp']} has wrong format {e.args}")
     result.pop('request_timestamp')
     assert result == {
-        'url': None,
+        'url': INCORRECT_URL,
         'ip_address': None,
         'resp_time': None,
         'resp_status_code': 404,
