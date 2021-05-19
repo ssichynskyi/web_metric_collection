@@ -3,10 +3,16 @@ import logging
 import os
 import time
 
-from typing import Iterable, Optional
-from src.metrics_collector import get_metrics
-from src.producer import Producer
-from utils.env_config import config
+from typing import Optional
+
+try:
+    from ..src.metrics_collector import get_metrics
+    from ..src.producer import Producer
+    from ..utils.env_config import config
+except ImportError:
+    from src.metrics_collector import get_metrics
+    from src.producer import Producer
+    from utils.env_config import config
 
 
 TOPIC = 'website-metrics'
