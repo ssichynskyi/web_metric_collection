@@ -1,8 +1,9 @@
+import argparse
 import logging
 import os
 import time
 
-from typing import Optional
+from typing import Iterable, Optional
 from src.metrics_collector import get_metrics
 from src.producer import Producer
 from utils.env_config import config
@@ -10,24 +11,26 @@ from utils.env_config import config
 
 TOPIC = 'website-metrics'
 
-_sleep_after_request = config['Monitored web sites']['monedo']['request sleep']
-_target_url = config['Monitored web sites']['monedo']['url']
-_target_pattern = config['Monitored web sites']['monedo']['expected pattern']
+SLEEP_BETWEEN_REQUESTS = config['Monitored web sites']['monedo']['request sleep']
+TARGET_URL = config['Monitored web sites']['monedo']['url']
+TARGET_PATTERN = config['Monitored web sites']['monedo']['expected pattern']
 _kafka_url = config['Metrics endpoint']['Aiven']['Kafka']['host']
 _kafka_port = str(config['Metrics endpoint']['Aiven']['Kafka']['port'])
 _kafka_uri = ':'.join((_kafka_url, _kafka_port))
 _ca_path = os.environ['CA-CERT']
 _cert_path = os.environ['SERVICE_CERT']
 _key_path = os.environ['SERVICE-KEY']
-aiven_kafka_producer = Producer(_kafka_uri, _ca_path, _cert_path, _key_path)
+
+AIVEN_KAFKA_PRODUCER = Producer(_kafka_uri, _ca_path, _cert_path, _key_path)
 
 
-def main(
+def collect_produce_service_run(
         url: str,
         producer: Producer,
         topic: str,
         sleep_time: int,
-        pattern: Optional[str] = None
+        pattern: Optional[str] = None,
+        cycles: Optional[int] = None
 ) -> None:
     """Service runner for web monitoring and posting to Kafka broker
 
@@ -37,24 +40,70 @@ def main(
         topic: Kafka topic this service will post to
         sleep_time: number of seconds to wait between metric collection
         pattern: optional regexp-like string to look at monitored web-site
+        cycles: number of iterations to run the service. Runs infinitely if None
 
     Returns:
-        None, runs until interrupted by user
+        None, runs until interrupted by user or iterated "iterations" times
 
     """
     log = logging.getLogger('WebMetricProducerService')
     log.info('Starting Website metric collection and publishing service.')
     with producer:
+        counter = 0
+        def proceed(): return counter < cycles if cycles else True
         while True:
             result = get_metrics(url, pattern)
             producer.send(topic, value=result)
+            counter += 1
+            if not proceed():
+                break
             time.sleep(sleep_time)
 
 
 if __name__ == '__main__':
+    cmd_args = argparse.ArgumentParser()
+
+    cmd_args.add_argument(
+        '--url',
+        dest='url',
+        help='url to collect web metrics from, no quotes. Defaults to specified in service.yaml',
+        type=str
+    )
+    cmd_args.add_argument(
+        '--topic',
+        dest='topic',
+        help=f'topic name to publish, no quotes. Defaults to {TOPIC}',
+        type=str
+    )
+    cmd_args.add_argument(
+        '--cycles',
+        dest='cycles',
+        help='number of cycles to run, infinite if not specified',
+        type=int
+    )
+    cmd_args.add_argument(
+        '--pattern',
+        dest='pattern',
+        help=f'regexp to look at website. Defaults to one specified in service.yaml settings',
+        type=str
+    )
+    cmd_args.add_argument(
+        '--sleep',
+        dest='sleep',
+        help='seconds to wait between broker polling, defaults to service.yaml settings',
+        type=int
+    )
+    args = cmd_args.parse_args()
+
     logging.basicConfig(
         format='%(asctime)s - %(levelname)s | %(name)s >>> %(message)s',
         datefmt='%d-%b-%Y %H:%M:%S'
     )
-    # ToDo: pass topic as a sys arg
-    main(_target_url, aiven_kafka_producer, TOPIC, _sleep_after_request, _target_pattern)
+    collect_produce_service_run(
+        args.url if args.url else TARGET_URL,
+        AIVEN_KAFKA_PRODUCER,
+        args.topic if args.topic else TOPIC,
+        args.sleep if args.sleep else SLEEP_BETWEEN_REQUESTS,
+        pattern=args.pattern if args.pattern else TARGET_PATTERN,
+        cycles=args.cycles if args.cycles else None
+    )
