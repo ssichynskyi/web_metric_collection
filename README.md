@@ -1,9 +1,16 @@
-# Service function
+# Web metric collector-producer
+
+- [What it does?](#what-it-does)
+- [Out of scope](#out-of-scope)
+- [ToDo](#todo)
+
+## What it does?
 Implements a service that monitors website availability over the network, produces metrics:
 - http response time
 - http response status code
 - availability of pre-defined text
-and sends this along with other data to Kafka broker at Aiven (as a Kafka producer)
+and sends this along with other data to Kafka broker at Aiven (as a Kafka producer).
+Service can be started separately or used like a package.
 
 ## Out of scope
 - script to set up, configure, run and delete Aiven Kafka broker (assumption: always available)
@@ -16,8 +23,5 @@ it hardly has any practical reason while complicates testing because of IPC laye
 - any additional environment setups / checks (like local dummy website, etc)
 
 ## ToDo:
-- extract / create documentation
 - create CI for unit test execution
 - create CI for integration test execution (?)
-- add E2E tests with and without regexp pattern
-- add E2E tests with invalid website

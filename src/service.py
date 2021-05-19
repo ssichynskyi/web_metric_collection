@@ -18,7 +18,7 @@ _kafka_url = config['Metrics endpoint']['Aiven']['Kafka']['host']
 _kafka_port = str(config['Metrics endpoint']['Aiven']['Kafka']['port'])
 _kafka_uri = ':'.join((_kafka_url, _kafka_port))
 _ca_path = os.environ['CA-CERT']
-_cert_path = os.environ['SERVICE_CERT']
+_cert_path = os.environ['SERVICE-CERT']
 _key_path = os.environ['SERVICE-KEY']
 
 AIVEN_KAFKA_PRODUCER = Producer(_kafka_uri, _ca_path, _cert_path, _key_path)
