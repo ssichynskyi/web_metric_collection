@@ -5,8 +5,8 @@ import yaml
 if __name__ == '__main__':
     cmd_args = argparse.ArgumentParser()
     cmd_args.add_argument(
-        '--sample',
-        dest='sample',
+        '--file',
+        dest='file',
         type=str,
         required=True
     )
@@ -76,5 +76,5 @@ if __name__ == '__main__':
     config['Metrics endpoint'][args.nameservice]['Kafka']['host'] = args.kafkaurl
     config['Metrics endpoint'][args.nameservice]['Kafka']['port'] = args.kafkaport
     config['Metrics endpoint'][args.nameservice]['Kafka']['topic'] = args.kafkatopic
-    with open(args.sample.replace('.example', ''), 'w+') as f:
+    with open(args.file, 'w+') as f:
         yaml.safe_dump(config, f)
