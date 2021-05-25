@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.9]
     timeout-minutes: 10
 
     steps:
@@ -65,17 +65,18 @@ jobs:
         run: |
           echo 'Creating folder for certificates and key...'
           pipenv run mkdir ${{ github.workspace }}/certs
+
           echo 'Creating certificates and keys from secrets...'
           pipenv run printf "%s" $(echo ${{ secrets.AIVEN_CLOUD_CA }}) > ${{ github.workspace }}/certs/ca.pem
           pipenv run printf "%s" $(echo ${{ secrets.AIVEN_CLOUD_SERVICE_CERT }}) > ${{ github.workspace }}/certs/service.cert
           pipenv run printf "%s" $(echo ${{ secrets.AIVEN_CLOUD_SERVICE_KEY }}) > ${{ github.workspace }}/certs/service.key
 
           echo 'Generate config file service.yaml...'
-          # --nameservice=Aiven --kafkaurl=kafka-3b71190f-project-7747.aivencloud.com --kafkaport=26867 
           pipenv --envs --support --verbose run python ${{ github.workspace }}/utils/ci_config_builder.py --file=${{ github.workspace }}/config/service.yaml --nameurl=monedo --url=https://www.monedo.com --pattern=Monedo --nameservice=Aiven --kafkaurl=${{ secrets.AIVEN_CLOUD_KAFKA_URL }} --kafkaport=${{ secrets.AIVEN_CLOUD_KAFKA_PORT }} --kafkatopic=website-metrics
+
           echo 'Run tests...'
           # excluding kafka producer smoke test
-          pipenv --envs --support --verbose run pytest tests/integration/test_web_metrics_collector.py -v
+          pipenv --envs --support --verbose run pytest tests/integration -v
         env:
           PROJECT_ROOT: ${{ github.workspace }}
           PYTHONPATH: ${{ github.workspace }}
