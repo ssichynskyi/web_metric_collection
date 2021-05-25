@@ -80,7 +80,7 @@ jobs:
         env:
           PROJECT_ROOT: ${{ github.workspace }}
           PYTHONPATH: ${{ github.workspace }}
-          PUBLISH_CONFIG: ${{ github.workspace }}/config/service.yaml
+          COLLECTION_CONFIG: ${{ github.workspace }}/config/service.yaml
           CA-CERT: ${{ github.workspace }}/certs/ca.pem
           SERVICE-CERT: ${{ github.workspace }}/certs/service.cert
           SERVICE-KEY: ${{ github.workspace }}/certs/service.key
