@@ -1,3 +1,4 @@
+"""Builds service.yaml config file using commandline arguments."""
 import argparse
 import yaml
 

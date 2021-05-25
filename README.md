@@ -1,9 +1,14 @@
+![CI status](https://github.com/ssichynskyi/web_metric_collection/actions/workflows/run_checks_and_tests.yml/badge.svg)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c88e5519a03f4fccb996837298f43f7d)](https://www.codacy.com/gh/ssichynskyi/web_metric_collection/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ssichynskyi/web_metric_collection&amp;utm_campaign=Badge_Grade)
 # Web metric collector-producer
 
 - [What it does](#what-it-does)
+
 - [How to run](#how-to-run)
   - [Command line options](#command-line-options)
+
 - [Out of scope](#out-of-scope)
+
 - [Known issues](#known-issues)
 
 ## What it does
@@ -45,14 +50,19 @@ optional arguments:
 
 ## Out of scope
 - script to set up, configure, run and delete Aiven Kafka broker (assumption: always available)
+
 - any optimization of multiple calls like async/await. Assumption - service shall
   not collect metrics too often or from too many websites.
+
 - any optimization related to Kafka broker messaging. Same assumption as above.
+
 - implementation of the service as a background service / daemon. For the testing task
   it hardly has any practical reason while complicates testing because of IPC layer.
+
 - testing kafka producer with Aiven kafka broker (only done on E2E level)
+
 - any additional environment setups / checks (like local dummy website, etc)
 
 ## Known issues
-- smoke test for Kafka producer fails with SSL error. The reason is unclear. Possible workaround:
-  to use SASL authentication instead of providing certificates
+- smoke test for Kafka producer fails with SSL error. The reason is unclear.
+  Possible workaround - to use SASL authentication instead of providing certificates

@@ -1,9 +1,12 @@
+"""Gets web metrics and parses responses."""
 import logging
 import re
-import requests
 
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Tuple
+
+import requests
+
 
 log = logging.getLogger(__name__)
 SERVICE_NAME = 'Web metric collection service'

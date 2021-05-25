@@ -1,8 +1,8 @@
 import ipaddress
+from datetime import timedelta, datetime
 
 import pytest
 from src.metrics_collector import get_metrics, SERVICE_NAME
-from datetime import timedelta, datetime
 
 
 ALWAYS_AVAILABLE_URL = 'https://www.google.com'

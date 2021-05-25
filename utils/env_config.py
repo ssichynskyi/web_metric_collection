@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import yaml
-
 from pathlib import Path
+
+import yaml
 
 
 class ConfigParser:
