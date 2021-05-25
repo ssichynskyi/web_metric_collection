@@ -4,7 +4,6 @@
 - [Out of scope](#out-of-scope)
 - [How to run](#how-to-run)
   - [Command line options](#command-line-options)
-- [ToDo](#todo)
 
 ## What it does
 Implements a service that monitors website availability over the network, produces metrics:
@@ -19,15 +18,15 @@ Service can be started separately or used like a package.
 ## How to run
 This is a python program, therefore you need Python3.9 for the execution and pipenv of version 2020.11.15 or close
 for the creation of virtual environment
-To run service with default parameters from shell, go to service project root filder and run:
+To run service with default parameters from shell, go to service project root folder and run:
 ```console
 $pipenv shell
 $python3.9 src/service.py
 ```
 
 ### Command line options
-Service takes the default values of it's settings from config/service.yaml file and partially from it's own body.
-For convenience, there's a possbility to overwrite most of these params using keywor arguments.
+Service takes the default values of its settings from config/service.yaml file and partially from its own body.
+For convenience, there's a possibility to overwrite most of these params using keyword arguments.
 To get help, from the project root
 ```console
 $pipenv shell
@@ -55,4 +54,4 @@ optional arguments:
 
 ## Known issues
 - smoke test for Kafka producer fails with SSL error. The reason is unclear. Possible workaround:
-  to use SASL authentification instead of providing certificates
+  to use SASL authentication instead of providing certificates
