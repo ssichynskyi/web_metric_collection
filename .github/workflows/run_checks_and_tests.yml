@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.9]
+        python-version: [3.7, 3.8, 3.9]
     timeout-minutes: 10
 
     steps:
@@ -72,10 +72,7 @@ jobs:
 
           echo 'Generate config file service.yaml...'
           # --nameservice=Aiven --kafkaurl=kafka-3b71190f-project-7747.aivencloud.com --kafkaport=26867 
-          pipenv --envs --support --verbose run python ${{ github.workspace }}/utils/ci_config_builder.py \ 
-            --file=${{ github.workspace }}/config/service.yaml --nameurl=monedo --url=https://www.monedo.com \
-            --pattern=Monedo --nameservice=Aiven --kafkaurl=${{ secrets.AIVEN_CLOUD_KAFKA_URL }} \
-            --kafkaport=${{ secrets.AIVEN_CLOUD_KAFKA_PORT }} --kafkatopic=website-metrics
+          pipenv --envs --support --verbose run python ${{ github.workspace }}/utils/ci_config_builder.py --file=${{ github.workspace }}/config/service.yaml --nameurl=monedo --url=https://www.monedo.com --pattern=Monedo --nameservice=Aiven --kafkaurl=${{ secrets.AIVEN_CLOUD_KAFKA_URL }} --kafkaport=${{ secrets.AIVEN_CLOUD_KAFKA_PORT }} --kafkatopic=website-metrics
           echo 'Run tests...'
           # excluding kafka producer smoke test
           pipenv --envs --support --verbose run pytest tests/integration/test_web_metrics_collector.py -v
