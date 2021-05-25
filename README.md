@@ -51,6 +51,6 @@ it hardly has any practical reason while complicates testing because of IPC laye
 - testing kafka producer with Aiven kafka broker (only done on E2E level)
 - any additional environment setups / checks (like local dummy website, etc)
 
-## ToDo:
-- create CI for unit test execution
-- create CI for integration test execution (?)
+## Known issues
+- smoke test for Kafka producer fails with SSL error. The reason is unclear. Possible workaround -
+to use SASL authentification instead of providing certificates
