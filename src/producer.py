@@ -48,7 +48,7 @@ class Producer:
 
     @property
     def producer(self):
-        """Access to genuine Kafka producer"""
+        """Access to genuine Kafka producer."""
         return self._producer
 
     def send(self, topic: str, value, *args, timeout=None, **kwargs) -> None:
