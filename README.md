@@ -2,7 +2,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c88e5519a03f4fccb996837298f43f7d)](https://www.codacy.com/gh/ssichynskyi/web_metric_collection/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ssichynskyi/web_metric_collection&amp;utm_campaign=Badge_Grade)
 # Web metric collector-producer
 
-- [What it does?](#what-it-does)
+- [What it does](#what-it-does)
 
 - [How to run](#how-to-run)
   - [Command line options](#command-line-options)
@@ -13,6 +13,7 @@
 
 ## What it does
 Implements a service that monitors website availability over the network, produces metrics:
+
 - http response time
 - http response status code
 - availability of pre-defined text
@@ -23,15 +24,15 @@ Service can be started separately or used like a package.
 ## How to run
 This is a python program, therefore you need Python3.9 for the execution and pipenv of version 2020.11.15 or close
 for the creation of virtual environment
-To run service with default parameters from shell, go to service project root filder and run:
+To run service with default parameters from shell, go to service project root folder and run:
 ```console
 $pipenv shell
 $python3.9 src/service.py
 ```
 
 ### Command line options
-Service takes the default values of it's settings from config/service.yaml file and partially from it's own body.
-For convenience, there's a possbility to overwrite most of these params using keywor arguments.
+Service takes the default values of its settings from config/service.yaml file and partially from its own body.
+For convenience, there's a possibility to overwrite most of these params using keyword arguments.
 To get help, from the project root
 ```console
 $pipenv shell
