@@ -1,3 +1,4 @@
+"""Implements wrapper for Kafka Producer."""
 import json
 import logging
 
@@ -33,6 +34,7 @@ class Producer:
         self._ca_path = ca_path
         self._cert_path = cert_path
         self._key_path = key_path
+        self._producer = None
 
     def __enter__(self):
         """Initializes connection to broker on entering with block."""
