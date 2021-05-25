@@ -1,3 +1,4 @@
+"""Runs metrics_collector and Kafka producer collaboratively."""
 import argparse
 import logging
 import os

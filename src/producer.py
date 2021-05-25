@@ -1,5 +1,6 @@
 import json
 import logging
+
 from kafka import KafkaProducer
 
 
@@ -34,6 +35,7 @@ class Producer:
         self._key_path = key_path
 
     def __enter__(self):
+        """Initializes connection to broker on entering with block."""
         self._producer = KafkaProducer(
             bootstrap_servers=self._service_uri,
             security_protocol="SSL",
@@ -49,7 +51,7 @@ class Producer:
         """Access to genuine Kafka producer"""
         return self._producer
 
-    def send(self, topic: str, value, timeout=None, *args, **kwargs) -> None:
+    def send(self, topic: str, value, *args, timeout=None, **kwargs) -> None:
         """Sends msg to a topic
 
         Args:
@@ -72,4 +74,5 @@ class Producer:
         self._producer.flush(timeout)
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """Finalizer which is called on exit with block."""
         self._producer.close()
