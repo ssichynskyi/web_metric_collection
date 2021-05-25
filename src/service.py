@@ -90,7 +90,7 @@ if __name__ == '__main__':
     cmd_args.add_argument(
         '--pattern',
         dest='pattern',
-        help=f'regexp to look at website. Defaults to one specified in service.yaml settings',
+        help='regexp to look at website. Defaults to one specified in service.yaml settings',
         type=str
     )
     cmd_args.add_argument(
