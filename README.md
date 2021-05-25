@@ -1,9 +1,10 @@
 # Web metric collector-producer
 
 - [What it does](#what-it-does)
-- [Out of scope](#out-of-scope)
 - [How to run](#how-to-run)
   - [Command line options](#command-line-options)
+- [Out of scope](#out-of-scope)
+- [Known issues](#known-issues)
 
 ## What it does
 Implements a service that monitors website availability over the network, produces metrics:
