@@ -1,0 +1,16 @@
+---
+Monitored web sites:
+  monedo:
+    url: 'https://www.monedo.com/'
+    # number of seconds between polling website. It's highly recommended that
+    # this time is at least 10x smaller than fetch time for paired service - db publisher
+    request sleep: 60
+    expected pattern: '<h1.*?>Monedo is where the best finance and tech brains come together</h1>'
+
+Metrics collection endpoint:
+  local:
+    broker:
+      type: kafka
+      host: '127.0.0.1'
+      port: 9092
+      auth: sasl_plain
