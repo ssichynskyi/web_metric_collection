@@ -14,3 +14,9 @@ Metrics collection endpoint:
       host: 'kafka-3b71190f-project-7747.aivencloud.com'
       port: 26867
       auth: ssl
+  docker:
+    broker:
+      type: kafka
+      host: 'localhost'
+      port: 9092
+      auth: no_auth
