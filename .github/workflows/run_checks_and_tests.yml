@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.9]
     timeout-minutes: 10
 
     steps:
@@ -88,7 +88,7 @@ jobs:
           bitnami/kafka:latest
           echo 'Run tests...'
           # excluding kafka producer smoke test
-          pipenv --envs --support --verbose run pytest tests/integration/test_web_metrics_collector.py -v
+          pipenv --envs --support --verbose run pytest tests/integration -v
 
         env:
           PROJECT_ROOT: ${{ github.workspace }}
