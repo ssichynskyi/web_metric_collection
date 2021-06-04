@@ -9,6 +9,7 @@ import requests
 
 
 log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 SERVICE_NAME = 'Web metric collection service'
 
 

@@ -6,6 +6,7 @@ from kafka import KafkaProducer
 
 
 log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 
 
 # here I've used a code example from here:
