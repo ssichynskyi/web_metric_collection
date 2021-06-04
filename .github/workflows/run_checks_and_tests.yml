@@ -13,8 +13,6 @@ jobs:
     services:
       zookeeper-server:
         image: bitnami/zookeeper:latest
-        ports:
-          - 2181:2181
         env:
           ALLOW_ANONYMOUS_LOGIN: yes
       kafka-server:
