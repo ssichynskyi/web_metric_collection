@@ -17,6 +17,6 @@ Metrics collection endpoint:
   docker:
     broker:
       type: kafka
-      host: 'localhost'
+      host: 'http://localhost'
       port: 9092
       auth: no_auth

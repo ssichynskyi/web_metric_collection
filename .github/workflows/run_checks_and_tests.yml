@@ -24,11 +24,11 @@ jobs:
         env:
           ALLOW_PLAINTEXT_LISTENER: yes
           KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
-          KAFKA_CFG_ZOOKEEPER_CONNECT: ${{ job.services.zookeeper-server.ports['2181'] }}
+          KAFKA_CFG_ZOOKEEPER_CONNECT: localhost:2181
           KAFKA_BROKER_ID: 1
-          KAFKA_CFG_LISTENERS: 'PLAINTEXT://:9092'
-          KAFKA_CFG_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
-          KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT'
+          KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+          KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+          KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -82,10 +82,8 @@ jobs:
 
       - name: run integration tests
         run: |
-          echo 'Run tests...'
-          # excluding kafka producer smoke test
+          echo 'Run integration tests...'
           pipenv --envs --support --verbose run pytest tests/integration -v
-
         env:
           PROJECT_ROOT: ${{ github.workspace }}
           PYTHONPATH: ${{ github.workspace }}
