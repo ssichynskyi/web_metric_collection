@@ -10,6 +10,25 @@ jobs:
         python-version: [3.9]
     timeout-minutes: 10
 
+    services:
+      zookeeper-server:
+        image: bitnami/zookeeper:latest
+        ports:
+          - 2181:2181
+        env:
+          ALLOW_ANONYMOUS_LOGIN: yes
+      kafka-broker:
+        image: bitnami/kafka:latest
+        ports:
+          - 9092:9092
+        env:
+          ALLOW_PLAINTEXT_LISTENER: yes
+          KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
+          KAFKA_CFG_ZOOKEEPER_CONNECT: ${{ job.services.zookeeper-server.ports['2181'] }}
+          KAFKA_BROKER_ID: 1
+          KAFKA_CFG_LISTENERS: 'PLAINTEXT://:9092'
+          KAFKA_CFG_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
+          KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT'
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -63,28 +82,6 @@ jobs:
 
       - name: run integration tests
         run: |
-          echo "${{ job.services.network }}"
-          echo "run zookeeper server container"
-          docker run -d --rm \
-          --name zookeeper-server \
-          --network "${{ job.services.network }}" \
-          - p 2181:2181 \
-          -e ALLOW_ANONYMOUS_LOGIN=yes \
-          bitnami/zookeeper:latest
-
-          echo "run kafka server container"
-          docker run -d --rm \
-          --name kafka-server \
-          --network "${{ job.services.network }}" \
-          -p 9092:9092 \
-          -e ALLOW_PLAINTEXT_LISTENER=yes \
-          -e KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true \
-          -e KAFKA_CFG_ZOOKEEPER_CONNECT="${{ job.services.network }}":2181 \
-          -e KAFKA_BROKER_ID=1 \
-          -e KAFKA_CFG_LISTENERS=PLAINTEXT://:9092 \
-          -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://"${{ job.services.network }}":9092 \
-          -e KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT \
-          bitnami/kafka:latest
           echo 'Run tests...'
           # excluding kafka producer smoke test
           pipenv --envs --support --verbose run pytest tests/integration -v
