@@ -27,19 +27,19 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Code Inspector GitHub action
-        uses: codeinspectorio/github-action@v1
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          code_inspector_access_key: ${{ secrets.CODE_INSPECTOR_ACCESS_KEY }}
-          code_inspector_secret_key: ${{ secrets.CODE_INSPECTOR_SECRET_KEY }}
-          min_quality_grade: 'NEUTRAL'
-          min_quality_score: '70'
-          max_defects_rate: '0.1'
-          max_complex_functions_rate: '0.1'
-          max_long_functions_rate: '0.1'
-          project_name: 'web_metrics_posting'
-          max_timeout_sec: '600'
+#      - name: Code Inspector GitHub action
+#        uses: codeinspectorio/github-action@v1
+#        with:
+#          repo_token: ${{ secrets.GITHUB_TOKEN }}
+#          code_inspector_access_key: ${{ secrets.CODE_INSPECTOR_ACCESS_KEY }}
+#          code_inspector_secret_key: ${{ secrets.CODE_INSPECTOR_SECRET_KEY }}
+#          min_quality_grade: 'NEUTRAL'
+#          min_quality_score: '70'
+#          max_defects_rate: '0.1'
+#          max_complex_functions_rate: '0.1'
+#          max_long_functions_rate: '0.1'
+#          project_name: 'web_metrics_posting'
+#          max_timeout_sec: '600'
 
       - name: Install pipenv
         run: |
@@ -63,27 +63,26 @@ jobs:
 
       - name: run integration tests
         run: |
-          echo "create docker network required for kafka<->zookeeper connection"
-          docker network create broker-nw --driver bridge
-
+          echo "${{ job.services.network }}"
           echo "run zookeeper server container"
           docker run -d --rm \
           --name zookeeper-server \
-          --network broker-nw \
+          --network "${{ job.services.network }}" \
+          - p 2181:2181 \
           -e ALLOW_ANONYMOUS_LOGIN=yes \
           bitnami/zookeeper:latest
 
           echo "run kafka server container"
           docker run -d --rm \
           --name kafka-server \
-          --network broker-nw \
+          --network "${{ job.services.network }}" \
           -p 9092:9092 \
           -e ALLOW_PLAINTEXT_LISTENER=yes \
           -e KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true \
-          -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181 \
+          -e KAFKA_CFG_ZOOKEEPER_CONNECT="${{ job.services.network }}":2181 \
           -e KAFKA_BROKER_ID=1 \
           -e KAFKA_CFG_LISTENERS=PLAINTEXT://:9092 \
-          -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092 \
+          -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://"${{ job.services.network }}":9092 \
           -e KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT \
           bitnami/kafka:latest
           echo 'Run tests...'
