@@ -22,7 +22,7 @@ SLEEP_BETWEEN_REQUESTS = config['Monitored web sites']['monedo']['request sleep'
 TARGET_URL = config['Monitored web sites']['monedo']['url']
 TARGET_PATTERN = config['Monitored web sites']['monedo']['expected pattern']
 
-_collection_provider = os.environ['BROKER_SERVICE_PROVIDER']
+_collection_provider = os.environ.get('BROKER_SERVICE_PROVIDER')
 _broker_settings = config['Metrics collection endpoint'][_collection_provider]['broker']
 _broker_type = _broker_settings['type']
 _broker_url = _broker_settings['host']
