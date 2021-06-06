@@ -81,7 +81,7 @@ def collect_produce_service_run(
         None, runs until interrupted by user or iterated "iterations" times
 
     """
-    log = logging.getLogger('WebMetricProducerService')
+    log = logging.getLogger(f'{__file__}:WebMetricProducerService')
     log.info('Starting Website metric collection and publishing service.')
     with producer:
         counter = 0
