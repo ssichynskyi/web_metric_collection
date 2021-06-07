@@ -13,7 +13,6 @@
 
 ## What it does
 Implements a service that monitors website availability over the network, produces metrics:
-
 - http response time
 - http response status code
 - availability of pre-defined text
@@ -27,7 +26,7 @@ for the creation of virtual environment
 To run service with default parameters from shell, go to service project root folder and run:
 ```console
 $pipenv shell
-$python3.9 src/service.py
+$python3.9 src/service.py [args]
 ```
 
 ### Command line options
@@ -38,10 +37,12 @@ To get help, from the project root
 $pipenv shell
 $python src/service.py --help
 
-usage: service.py [-h] [--url URL] [--topic TOPIC] [--cycles CYCLES] [--pattern PATTERN] [--sleep SLEEP]
+usage: service.py [-h] [--url URL] [--topic TOPIC] [--cycles CYCLES] [--pattern PATTERN][--sleep SLEEP]
+
 optional arguments:
   -h, --help         show this help message and exit
-  --url URL          url to collect web metrics from, no quotes. Defaults to specified in service.yaml
+  --url URL          url to collect web metrics from, no quotes. Defaults to specified in
+                     service.yaml
   --topic TOPIC      topic name to publish, no quotes. Defaults to website-metrics
   --cycles CYCLES    number of cycles to run, infinite if not specified
   --pattern PATTERN  regexp to look at website. Defaults to one specified in service.yaml settings
@@ -61,19 +62,24 @@ optional arguments:
 
 - testing kafka producer with Aiven kafka broker (only done on E2E level)
 
-- any additional environment setups / checks (like local dummy website, etc)
-
 ## Known issues
 - Application could be stopped only via SIGINT or harder method which results in
 the abnormal log - Keyboard interruption exception.
 
 ## ToDo
 - move constants to separate module (fix this in tests and in service)
-- update service usage here
-- move common code into separate repo and connect as submodule (authentication)
+
+- move common code into separate repo and connect as submodule
+  (authentication, config, config merger, service wrapper)
+
 - improve import system
+
 - create a way to shut down the service normally
+
 - improve mock (with patching)
+
 - add commit hooks and CI manipulations
+
 - change docu strings to restructuredText and add automatic formatting by black
+
 - add automatic docu-string creation
