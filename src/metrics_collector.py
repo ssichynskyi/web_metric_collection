@@ -9,6 +9,7 @@ import requests
 
 
 log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 SERVICE_NAME = 'Web metric collection service'
 
 
@@ -27,7 +28,7 @@ def get_metrics(url: str, re_pattern: Optional[str] = None) -> Dict:
     headers = {'User-Agent': SERVICE_NAME}
     try:
         log.info(f'Sending get request to: {url}')
-        resp = requests.get(url, headers=headers, stream=True)
+        resp = requests.get(url, headers=headers, stream=True, timeout=4)
     except requests.exceptions.ConnectionError:
         result = {
             'request_timestamp': request_time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -68,7 +69,10 @@ def parse_response(resp: requests.Response, re_pattern: Optional[str] = None) ->
 
     """
     # kinda hack to get the ip address from requests by using protected members
-    ip = resp.raw._fp.fp.raw._sock.getpeername()[0]
+    try:
+        ip = resp.raw._fp.fp.raw._sock.getpeername()[0]
+    except AttributeError:
+        ip = None
     resp_time = resp.elapsed
     if re_pattern:
         pattern_found = True if re.findall(re_pattern, resp.text) else False

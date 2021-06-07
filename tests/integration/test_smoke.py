@@ -1,6 +1,6 @@
 import pytest
 
-from src.service import TOPIC, AIVEN_KAFKA_PRODUCER as producer
+from src.service import TOPIC, PRODUCER as producer
 
 
 """This test ensure that kafka producer is properly configured

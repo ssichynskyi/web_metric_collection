@@ -64,5 +64,16 @@ optional arguments:
 - any additional environment setups / checks (like local dummy website, etc)
 
 ## Known issues
-- smoke test for Kafka producer fails with SSL error. The reason is unclear.
-  Possible workaround - to use SASL authentication instead of providing certificates
+- Application could be stopped only via SIGINT or harder method which results in
+the abnormal log - Keyboard interruption exception.
+
+## ToDo
+- move constants to separate module (fix this in tests and in service)
+- update service usage here
+- move common code into separate repo and connect as submodule (authentication)
+- improve import system
+- create a way to shut down the service normally
+- improve mock (with patching)
+- add commit hooks and CI manipulations
+- change docu strings to restructuredText and add automatic formatting by black
+- add automatic docu-string creation

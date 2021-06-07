@@ -16,19 +16,47 @@ except ImportError:
     from utils.env_config import config
 
 
+# set default params
 TOPIC = 'website-metrics'
-
 SLEEP_BETWEEN_REQUESTS = config['Monitored web sites']['monedo']['request sleep']
 TARGET_URL = config['Monitored web sites']['monedo']['url']
 TARGET_PATTERN = config['Monitored web sites']['monedo']['expected pattern']
-_kafka_url = config['Metrics endpoint']['Aiven']['Kafka']['host']
-_kafka_port = str(config['Metrics endpoint']['Aiven']['Kafka']['port'])
-_kafka_uri = ':'.join((_kafka_url, _kafka_port))
-_ca_path = os.environ['CA-CERT']
-_cert_path = os.environ['SERVICE-CERT']
-_key_path = os.environ['SERVICE-KEY']
 
-AIVEN_KAFKA_PRODUCER = Producer(_kafka_uri, _ca_path, _cert_path, _key_path)
+_collection_provider = os.environ.get('BROKER_SERVICE_PROVIDER')
+_broker_settings = config['Metrics collection endpoint'][_collection_provider]['broker']
+_broker_type = _broker_settings['type']
+_broker_url = _broker_settings['host']
+_broker_port = str(_broker_settings['port'])
+_broker_uri = ':'.join((_broker_url, _broker_port))
+
+_broker_auth_sasl_plain = {
+    'security_protocol': 'SASL_PLAINTEXT',
+    'sasl_mechanism': 'PLAIN',
+    'sasl_plain_username': os.environ.get('BROKER_USERNAME'),
+    'sasl_plain_password': os.environ.get('BROKER_PASSWORD')
+}
+
+_broker_auth_ssl = {
+    'security_protocol': 'SSL',
+    'ssl_cafile': os.environ.get('BROKER_CA_CERT'),
+    'ssl_certfile': os.environ.get('BROKER_SERVICE_CERT'),
+    'ssl_keyfile': os.environ.get('BROKER_SERVICE_KEY')
+}
+
+_brokers = {
+    'kafka': Producer
+}
+
+_broker_auth = {
+    'sasl_plain': _broker_auth_sasl_plain,
+    'ssl': _broker_auth_ssl,
+    'no_auth': {'security_protocol': 'PLAINTEXT'}
+}
+
+PRODUCER = _brokers[_broker_settings['type']](
+    bootstrap_servers=_broker_uri,
+    **_broker_auth[_broker_settings['auth']]
+)
 
 
 def collect_produce_service_run(
@@ -53,7 +81,7 @@ def collect_produce_service_run(
         None, runs until interrupted by user or iterated "iterations" times
 
     """
-    log = logging.getLogger('WebMetricProducerService')
+    log = logging.getLogger(f'{__file__}:WebMetricProducerService')
     log.info('Starting Website metric collection and publishing service.')
     with producer:
         counter = 0
@@ -108,7 +136,7 @@ if __name__ == '__main__':
     )
     collect_produce_service_run(
         args.url if args.url else TARGET_URL,
-        AIVEN_KAFKA_PRODUCER,
+        PRODUCER,
         args.topic if args.topic else TOPIC,
         args.sleep if args.sleep else SLEEP_BETWEEN_REQUESTS,
         pattern=args.pattern if args.pattern else TARGET_PATTERN,

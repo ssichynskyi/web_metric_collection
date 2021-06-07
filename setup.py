@@ -9,6 +9,7 @@ import sys
 
 from io import open
 from os import path
+
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 
@@ -37,19 +38,19 @@ forbid_publish()
 
 
 setup(
-    name="WebMetricsCollectorConsumer",
-    version="0.0.1",
+    name="WebMetricsCollectProduce",
+    version="0.1.0",
     author="Sergii Sichynskyi",
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4",
     install_requires=[
-        "certifi==2020.12.5",
+        "certifi==2021.5.30",
         "chardet==4.0.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
         "idna==2.10; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
         "kafka-python==2.0.2",
         "pyyaml==5.4.1",
         "requests==2.25.1",
-        "urllib3==1.26.4; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+        "urllib3==1.26.5; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
     ],
     extras_require={
         "dev": [
