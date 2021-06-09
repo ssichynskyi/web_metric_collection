@@ -3,6 +3,7 @@ import logging
 import re
 
 from datetime import datetime, timedelta
+from socket import timeout
 from typing import Optional, Dict, Tuple
 
 import requests
@@ -29,7 +30,7 @@ def get_metrics(url: str, re_pattern: Optional[str] = None) -> Dict:
     try:
         log.info(f'Sending get request to: {url}')
         resp = requests.get(url, headers=headers, stream=True, timeout=4)
-    except requests.exceptions.ConnectionError:
+    except (requests.exceptions.ConnectionError, timeout):
         result = {
             'request_timestamp': request_time.strftime('%Y-%m-%d %H:%M:%S'),
             'url': url,
@@ -41,6 +42,7 @@ def get_metrics(url: str, re_pattern: Optional[str] = None) -> Dict:
         }
         log.warning(f'Not possible to reach url {url}!')
         return result
+
     rest = parse_response(resp, re_pattern)
     log.info(f'Received response from: {url}. Within: {rest[1]} with status: {rest[2]}')
     result = {
