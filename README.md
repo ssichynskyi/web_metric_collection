@@ -63,8 +63,7 @@ optional arguments:
 - testing kafka producer with Aiven kafka broker (only done on E2E level)
 
 ## Known issues
-- Application could be stopped only via SIGINT or harder method which results in
-the abnormal log - Keyboard interruption exception.
+- code duplication with partner service
 
 ## ToDo
 - move constants to separate module (fix this in tests and in service)

@@ -2,8 +2,10 @@
 import argparse
 import logging
 import os
+import sys
 import time
 
+from multiprocessing import Process
 from typing import Optional
 
 try:
@@ -87,12 +89,15 @@ def collect_produce_service_run(
         counter = 0
         def proceed(): return counter < cycles if cycles else True
         while True:
-            result = get_metrics(url, pattern)
-            producer.send(topic, value=result)
-            counter += 1
-            if not proceed():
+            try:
+                result = get_metrics(url, pattern)
+                producer.send(topic, value=result)
+                counter += 1
+                if not proceed():
+                    break
+                time.sleep(sleep_time)
+            except KeyboardInterrupt:
                 break
-            time.sleep(sleep_time)
 
 
 if __name__ == '__main__':
@@ -134,11 +139,43 @@ if __name__ == '__main__':
         format='%(asctime)s - %(levelname)s | %(name)s >>> %(message)s',
         datefmt='%d-%b-%Y %H:%M:%S'
     )
-    collect_produce_service_run(
+    mp_args = (
         args.url if args.url else TARGET_URL,
         PRODUCER,
         args.topic if args.topic else TOPIC,
-        args.sleep if args.sleep else SLEEP_BETWEEN_REQUESTS,
-        pattern=args.pattern if args.pattern else TARGET_PATTERN,
-        cycles=args.cycles if args.cycles else None
+        args.sleep if args.sleep else SLEEP_BETWEEN_REQUESTS
     )
+    mp_kwargs = {
+        'pattern': args.pattern if args.pattern else TARGET_PATTERN,
+        'cycles': args.cycles if args.cycles else None
+    }
+    proc_collect_produce = Process(
+        target=collect_produce_service_run,
+        args=mp_args,
+        kwargs=mp_kwargs
+    )
+    PROCESS_NAME = 'WebMetricsCollectorProducer'
+    proc_collect_produce.start()
+    if proc_collect_produce.is_alive():
+        print(f'Process {PROCESS_NAME} is collecting web metrics...')
+    timeout = 5
+    while True:
+        try:
+            user_input = input('Type "quit" and press enter to exit... \n')
+        except KeyboardInterrupt:
+            user_input = 'quit'
+        if user_input == 'quit':
+            print('Stopping process execution...')
+            proc_collect_produce.terminate()
+            time.sleep(timeout)
+        if proc_collect_produce.is_alive():
+            print('Still alive after SIGTERM! Lets kill this thing!')
+            proc_collect_produce.kill()
+            time.sleep(timeout)
+        if proc_collect_produce.is_alive():
+            print("It's a zombie! You've made it, you deal with it! I'm out!")
+        if not proc_collect_produce.is_alive():
+            msg = ' '.join((f'{PROCESS_NAME} stopped successfully.',
+                            f'Exit code: {proc_collect_produce.exitcode}.'))
+            print(msg)
+        sys.exit(0)
